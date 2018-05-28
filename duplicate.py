@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
 import time
-from urllib.error import HTTPError
 
 
 def main(argv=sys.argv[1:]):
@@ -25,17 +24,24 @@ def main(argv=sys.argv[1:]):
         file_name_a = argv[0]
         file_name_b = argv[1]
         search_not_included_data_two_file(file_name_a, file_name_b)
+    else:
+        print(u"引数がありません")
 
 
 def search_duplicate_one_file(file_name):
     file = open(file_name, 'r')
     data_list = []
     for line in file:
-        if line not in data_list:
+        if chop_data(line) not in data_list:
             data_list.append(chop_data(line))
         else:
             print(chop_data(line))
     file.close
+
+    output_file = open("not_duplicate_one_file.txt", 'w')
+    for data in data_list:
+        output_file.write("{0}\n".format(data))
+    output_file.close()
 
 
 def search_duplicate_two_file(file_name_a, file_name_b):

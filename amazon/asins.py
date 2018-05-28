@@ -32,7 +32,10 @@ def main(argv=sys.argv[1:]):
 def get_price(market, asin):
     try:
         url = urls[market].format(asin)
+        print("start")
+        time.sleep(1)
         html = req.urlopen(url)
+        print("end")
         soup = BeautifulSoup(html, 'html.parser')
 
         price = get_price_pattern1(soup)
@@ -47,6 +50,9 @@ def get_price(market, asin):
         if e.code == 503:
             time.sleep(5)
             get_price(market, asin)
+    except Exception as e:
+        time.sleep(5)
+        get_price(market, asin)
 
 
 def get_price_pattern1(soup):
@@ -76,7 +82,10 @@ def get_price_pattern3(soup):
 #     file.close
 def write_file(asin, price):
     file = open('output.txt', 'a')
-    file.write("{0}\n".format(price))
+    if price:
+        file.write("{0}\n".format(price))
+    else:
+        file.write(u"在庫切れ\n")
     file.close
 
 
