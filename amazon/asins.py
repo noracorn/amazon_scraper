@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import sys
 import time
 import urllib.request as req
@@ -19,6 +20,10 @@ def main(argv=sys.argv[1:]):
     if len(argv) != 2:
         print(u"引数が足りません。マーケット、ASIN")
 
+    os.remove("output.txt")
+    f = open('output.txt', 'w')
+    f.close()
+
     market = argv[0]
     asin_file = argv[1]
 
@@ -32,7 +37,7 @@ def main(argv=sys.argv[1:]):
 def get_price(market, asin):
     try:
         url = urls[market].format(asin)
-        print("start")
+        print("start {0}".format(asin))
         time.sleep(1)
         html = req.urlopen(url)
         print("end")
