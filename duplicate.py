@@ -48,11 +48,20 @@ def search_duplicate_two_file(file_name_a, file_name_b):
     file_a = open(file_name_a, 'r')
     file_b = open(file_name_b, 'r')
     data_list = [chop_data(line) for line in file_a]
+    output_list = []
     for line in file_b:
         if chop_data(line) in data_list:
             print(chop_data(line))
+        else:
+            output_list.append(chop_data(line))
+
     file_a.close
     file_b.close
+
+    output_file = open("not_duplicate_two_file.txt", 'w')
+    for data in output_list:
+        output_file.write("{0}\n".format(data))
+    output_file.close()
 
 
 def search_not_included_data_two_file(file_name_a, file_name_b):
