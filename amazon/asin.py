@@ -48,7 +48,13 @@ def get_price_pattern1(soup):
     outprice = soup.select("#priceblock_ourprice")
     if outprice:
         price = parse_price(outprice[0].string)
-        return price
+
+    shipping = soup.select(".shipping3P")
+    if shipping:
+        shipping = parse_price(shipping[0].string)
+        price = str(int(price) + int(shipping))
+
+    return price
 
 
 def get_price_pattern2(soup):
@@ -69,7 +75,15 @@ def parse_price(price):
     price = price.replace(',', '')
     price = price.replace('￥', '')
     price = price.replace(' ', '')
+    price = price.replace('+', '')
     price = price.replace('\n', '')
+
+    if not price.isdecimal():
+        for index, moji in enumerate(price):
+            if not moji.isdecimal():
+                break
+        price = price[0:index]
+
     return price
 
 
