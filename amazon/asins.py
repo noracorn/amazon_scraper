@@ -48,6 +48,12 @@ def get_price(market, asin):
             price = get_price_pattern2(soup)
         if not price:
             price = get_price_pattern3(soup)
+        if not price:
+            # 出品者からお買い求めNew
+            url = "https://www.amazon.co.jp/gp/offer-listing/{0}/ref=dp_olp_new?ie=UTF8&condition=new".format(asin)
+            html = req.urlopen(url)
+            soup = BeautifulSoup(html, 'html.parser')
+            price = get_price_pattern4(soup)
         print(price)
         time.sleep(1)
         return price
@@ -61,9 +67,9 @@ def get_price(market, asin):
 
 
 def get_price_pattern1(soup):
-    outprice = soup.select("#priceblock_ourprice")
-    if outprice:
-        price = parse_price(outprice[0].string)
+    price = soup.select("#priceblock_ourprice")
+    if price:
+        price = parse_price(price[0].string)
 
     shipping = soup.select(".shipping3P")
     if shipping:
@@ -75,17 +81,32 @@ def get_price_pattern1(soup):
 
 
 def get_price_pattern2(soup):
-    outprice = soup.select("#MediaMatrix .a-color-base .a-size-base")
-    if outprice:
-        price = parse_price(outprice[0].string)
+    price = soup.select("#MediaMatrix .a-color-base .a-size-base")
+    if price:
+        price = parse_price(price[0].string)
         return price
 
 
 def get_price_pattern3(soup):
-    outprice = soup.select("#olp_feature_div .a-color-price")
-    if outprice:
-        price = parse_price(outprice[0].string)
+    price = soup.select("#olp_feature_div .a-color-price")
+    if price:
+        price = parse_price(price[0].string)
         return price
+
+
+def get_price_pattern4(soup):
+    # 出品者からお買い求め新品
+    price = soup.select(".a-color-price.a-text-bold")
+    if price:
+        price = parse_price(price[0].string)
+
+    shipping = soup.select(".olpShippingPrice")
+    if shipping:
+        shipping = parse_price(shipping[0].string)
+        if shipping:
+            price = str(int(price) + int(shipping))
+
+    return price
 
 
 # def write_file(asin, price):
