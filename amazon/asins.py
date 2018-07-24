@@ -68,7 +68,8 @@ def get_price_pattern1(soup):
     shipping = soup.select(".shipping3P")
     if shipping:
         shipping = parse_price(shipping[0].string)
-        price = str(int(price) + int(shipping))
+        if shipping:
+            price = str(int(price) + int(shipping))
 
     return price
 
